@@ -1,8 +1,8 @@
 export const metadata = {
-  title: 'account',
+  title: 'Account',
 };
 
-export default function page() {
+export default function Page() {
   return (
     <header>
       <h1 className=' capitalize'>account</h1>
