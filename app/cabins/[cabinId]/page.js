@@ -14,16 +14,11 @@ Next.js will pre-generate a static page for each cabinId returned by generateSta
 When a user visits a URL like /cabins/1, Next.js will serve the pre-generated page for cabinId 1, improving performance and SEO. */
 
 export async function generateStaticParams() {
-  // Retrieve the list of cabins. This could be an API call, database query, etc.
   const cabins = await getCabins();
-
-  // Map over the cabins to create an array of objects with a `cabinId` property.
-  // Each `cabinId` is converted to a string.
   const IDs = cabins.map((cabin) => ({
     cabinId: String(cabin.id),
   }));
 
-  // Return the array of objects. This will be used by Next.js to generate static paths.
   return IDs;
 }
 

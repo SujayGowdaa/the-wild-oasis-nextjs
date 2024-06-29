@@ -7,6 +7,10 @@ export const metadata = {
   title: 'cabins',
 };
 
+/* Next.js will regenerate the page in the background at most once every 15 seconds. This allows you to have static pages that can be updated with fresh data without needing a full rebuild */
+
+export const revalidate = 15;
+
 export default function Page() {
   return (
     <div className=' h-full'>
