@@ -1,6 +1,4 @@
 // Importing components and styles
-import Logo from '@/app/_components/Logo'; // Importing the Logo component
-import Navigation from '@/app/_components/Navigation'; // Importing the Navigation component
 import '@/app/_styles/globals.css'; // Importing global CSS styles
 import { Josefin_Sans } from 'next/font/google'; // Importing the Josefin Sans font from Google Fonts
 import Header from './_components/Header';
