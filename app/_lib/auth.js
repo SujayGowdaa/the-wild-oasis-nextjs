@@ -2,11 +2,7 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
-// Configuring NextAuth with Google as a provider
-export const {
-  auth, // Exporting the 'auth' object for authentication
-  handlers: { GET, POST }, // Exporting the 'GET' and 'POST' handlers for the NextAuth API routes
-} = NextAuth({
+const authConfig = {
   providers: [
     // Configuring Google as an authentication provider
     Google({
@@ -21,4 +17,17 @@ export const {
       return !!auth?.user;
     },
   },
-});
+  pages: {
+    // Customizing the sign-in page
+    signIn: '/login',
+    signOut: '/logout',
+  },
+};
+
+// Configuring NextAuth with Google as a provider
+export const {
+  auth, // Exporting the 'auth' object for authentication
+  signIn,
+  signOut,
+  handlers: { GET, POST }, // Exporting the 'GET' and 'POST' handlers for the NextAuth API routes
+} = NextAuth(authConfig);
