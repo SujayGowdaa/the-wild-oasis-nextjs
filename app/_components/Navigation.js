@@ -32,10 +32,11 @@ export default async function Navigation() {
             >
               <img
                 src={session.user.image}
-                alt={session.user.name.split(' ')[0]}
+                alt={session.user.name}
                 refferrerPolicy='no-referrer'
                 className=' h-8 rounded-full'
               />
+              <p>{session.user.name.split(' ')[0]}</p>
             </Link>
           ) : (
             <Link
