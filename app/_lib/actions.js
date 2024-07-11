@@ -2,7 +2,8 @@
 import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
-import { getBookings } from './data-service';
+import { getBooking, getBookings } from './data-service';
+import { redirect } from 'next/navigation';
 
 export async function updateGuest(formData) {
   const session = await auth();
@@ -36,6 +37,40 @@ export async function updateGuest(formData) {
 
   // revalidate the route on demand
   revalidatePath('/account/profile');
+}
+
+export async function updateReservation(formData) {
+  const booking = await getBooking(formData.get('reservationId'));
+  const session = await auth();
+  const guestBookings = await getBookings(session.guestId);
+
+  if (!session) throw new Error('Please login in before updating your profile');
+
+  const bookingIds = guestBookings.map((booking) => booking.id);
+
+  if (!bookingIds.includes(Number(formData.get('reservationId'))))
+    throw new Error('You are not authorized to delete this booking');
+
+  const updatedFields = {
+    ...booking,
+    numGuests: Number(formData.get('numGuests')),
+    observations: formData.get('observations').slice(0, 500),
+  };
+
+  const { error } = await supabase
+    .from('bookings')
+    .update(updatedFields)
+    .eq('id', formData.get('reservationId'))
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error('Booking could not be updated');
+  }
+
+  revalidatePath('/account/reservations');
+  redirect('/account/reservations');
 }
 
 export async function deleteReservation(bookingId) {
