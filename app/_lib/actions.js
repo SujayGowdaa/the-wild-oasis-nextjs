@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
+import { getBookings } from './data-service';
 
 export async function updateGuest(formData) {
   const session = await auth();
@@ -35,6 +36,25 @@ export async function updateGuest(formData) {
 
   // revalidate the route on demand
   revalidatePath('/account/profile');
+}
+
+export async function deleteReservation(bookingId) {
+  const session = await auth();
+  if (!session) throw new Error('Please login in before updating your profile');
+  const guestBookings = await getBookings(session.guestId);
+  const bookingIds = guestBookings.map((booking) => booking.id);
+
+  if (!bookingIds.includes(bookingId))
+    throw new Error('You are not authorized to delete this booking');
+
+  const { error } = await supabase
+    .from('bookings')
+    .delete()
+    .eq('id', bookingId);
+
+  if (error) throw new Error('Booking could not be deleted');
+
+  revalidatePath('/account/reservations');
 }
 
 export async function signInAction() {
