@@ -74,6 +74,7 @@ export async function updateReservation(formData) {
 }
 
 export async function deleteReservation(bookingId) {
+  // await new Promise((res) => setTimeout(res, 2000));
   const session = await auth();
   if (!session) throw new Error('Please login in before updating your profile');
   const guestBookings = await getBookings(session.guestId);
