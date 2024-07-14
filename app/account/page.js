@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import Navigation from '../components/Navigation';
+export const metadata = {
+  title: 'Account',
+};
 
-export default function page() {
+export default function Page() {
   return (
     <header>
-      <Navigation />
       <h1 className=' capitalize'>account</h1>
     </header>
   );
