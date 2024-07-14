@@ -1,9 +1,37 @@
 'use server';
+import { supabase } from './supabase';
 import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
-import { supabase } from './supabase';
 import { getBooking, getBookings } from './data-service';
 import { redirect } from 'next/navigation';
+
+export async function createBooking(bookingData, formData) {
+  const session = await auth();
+  if (!session) throw new Error('Please login in before updating your profile');
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.guestId,
+    numGuests: Number(formData.get('numGuests')),
+    observations: formData.get('observations').slice(0, 500),
+    extrasPrice: 0,
+    totalPrice: bookingData.price,
+    isPaid: false,
+    hasBreakfast: false,
+    status: 'unconfirmed',
+  };
+
+  const { error } = await supabase.from('bookings').insert([newBooking]);
+
+  if (error) {
+    console.error(error);
+    throw new Error('Booking could not be created');
+  }
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+
+  redirect('/cabins/thankyou');
+}
 
 export async function updateGuest(formData) {
   const session = await auth();

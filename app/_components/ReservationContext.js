@@ -1,5 +1,4 @@
 'use client';
-
 const { createContext, useState, useContext } = require('react');
 const ReservationContext = createContext();
 const initialState = { from: null, to: null };

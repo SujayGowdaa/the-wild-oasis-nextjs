@@ -4,7 +4,6 @@ import {
   isPast,
   isSameDay,
   isWithinInterval,
-  some,
 } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -12,21 +11,20 @@ import { useReservation } from './ReservationContext';
 
 function isAlreadyBooked(range, datesArr) {
   return (
-    range.from &&
-    range.to &&
+    range?.from &&
+    range?.to &&
     datesArr.some((date) =>
-      isWithinInterval(date, { start: range.from, end: range.to })
+      isWithinInterval(date, { start: range?.from, end: range?.to })
     )
   );
 }
 
 function DateSelector({ settings, cabin, bookedDates }) {
   const { range, setRange, resetRange } = useReservation();
-
   const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
-  const { regularPrice, discount } = cabin;
-  const numNights = differenceInDays(range.to, range.from);
-  const cabinPrice = numNights * (regularPrice - discount);
+  const { regularPrice, discountPrice } = cabin;
+  const numNights = differenceInDays(range?.to, range?.from);
+  const cabinPrice = numNights * regularPrice - discountPrice;
 
   // SETTINGS
   const { minBookingLength, maxBookingLength } = settings;
@@ -54,9 +52,11 @@ function DateSelector({ settings, cabin, bookedDates }) {
       <div className='flex items-center justify-between px-8 bg-accent-500 text-primary-800 h-[72px]'>
         <div className='flex items-baseline gap-6'>
           <p className='flex gap-2 items-baseline'>
-            {discount > 0 ? (
+            {discountPrice > 0 ? (
               <>
-                <span className='text-2xl'>${regularPrice - discount}</span>
+                <span className='text-2xl'>
+                  ${regularPrice - discountPrice}
+                </span>
                 <span className='line-through font-semibold text-primary-700'>
                   ${regularPrice}
                 </span>
@@ -79,7 +79,7 @@ function DateSelector({ settings, cabin, bookedDates }) {
           ) : null}
         </div>
 
-        {range.from || range.to ? (
+        {range?.from || range?.to ? (
           <button
             className='border border-primary-800 py-2 px-4 text-sm font-semibold'
             onClick={resetRange}
